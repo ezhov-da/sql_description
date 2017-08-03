@@ -1,0 +1,86 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>title.admin.panel.title</title>
+        <script src="../js/jquery-1.12.3.min.js"></script>
+        <link rel="stylesheet" href="../bootstrap-3.3.6-dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="../bootstrap-3.3.6-dist/css/bootstrap.css">
+        <link rel="stylesheet" href="../css/jBox.css">
+        <link rel="stylesheet" href="../css/themes/ModalBorder.css">
+        <link rel="stylesheet" href="../css/comment.css">
+        <link rel="stylesheet" href="../css/table.css">
+        <script src="../js/jBox.js"></script>
+        <script src="../title.common.local.js"></script>
+        <script>
+            function ajax() {
+                var msg = $("#form").serialize();
+                $.ajax({
+                    url: "/adminTreatment",
+                    data: msg,
+                    type: "POST",
+                    success: function (result) {
+                        console.log(result);
+                        $('#textResultCommit').text(result);
+                    },
+                    error: function (xhr, str) {
+                        console.log(xhr.responseText);
+                        $('#textResultCommit').text(xhr.responseText);
+                    }
+                });
+            }
+
+            function fillFields() {
+                $.ajax({
+                    url: "/templates/app_lists.json",
+                    dataType: "json",
+                    success: function (result) {
+                        $('#listStatus').text(result.statusList);
+                        $('#listTools').text(result.toolList);
+                        $('#listAuthors').text(result.whoList);
+                    }});
+            }
+
+            $(document).ready(function () {
+                fillFields();
+            });
+        </script>        
+    </head>
+    <body>
+        <div class="container">
+            <div class="panel panel-collapse">
+                <div class="panel-heading">title.admin.panel.title</div>
+                <div class="panel-body">
+                    <form id="form" method="post" action="javascript:void(0);" onsubmit="ajax()">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label for="listStatus">title.admin.panel.status</label>
+                                <br>
+                                <textarea id="listStatus" name="status" rows="5" cols="40"></textarea>	
+                            </div>          
+                            <div class="col-md-4">
+                                <label for="listTools">title.admin.panel.tools</label>
+                                <br>
+                                <textarea id="listTools" name="tool" rows="5" cols="40"></textarea>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="listAuthors">title.admin.panel.authors</label>
+                                <br>
+                                <textarea id="listAuthors" name="author" rows="5" cols="40"></textarea>	
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label for="pass">title.admin.panel.password</label>
+                                <input type="password" name="pass" id="pass">
+                                <input type="submit" name="send" class="send" value="title.admin.panel.button.password">
+                                <label id="textResultCommit"></label>
+                            </div>          
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <script src="../bootstrap-3.3.6-dist/js/bootstrap.min.js"></script>
+    </body>
+</html>

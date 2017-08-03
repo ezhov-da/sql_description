@@ -1,0 +1,93 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>title.server.server :NAME_SERVER</title>
+        <script src="../js/jquery-1.12.3.min.js"></script>
+        <link rel="stylesheet" href="../bootstrap-3.3.6-dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="../bootstrap-3.3.6-dist/css/bootstrap.css">
+        <link rel="stylesheet" href="../css/jBox.css">
+        <link rel="stylesheet" href="../css/themes/ModalBorder.css">
+        <link rel="stylesheet" href="../css/comment.css">
+        <link rel="stylesheet" href="../css/table.css">
+        <script src="../js/jBox.js"></script>
+        <script src="../js/jquery.dataTables.min.js"></script>
+        <script src="../js/own/executeClick.js"></script>
+        <script src="../title.common.local.js"></script>
+        <script>
+
+            $(document).ready(function () {
+                var table = $('#data')
+                        .DataTable({
+                            "ajax": '/:LOADER:NAME_SERVER',
+                            "processing": true,
+                            "columns": [
+                                {"data": "description.name"},
+                                {"data": "description.tool"},
+                                {"data": "description.status"},
+                                {"data": "description.author"},
+                                {"data": "description.dtCreate"}
+                            ],
+                            "language": {
+                                "url": "title.server.table.local.url"
+                            }
+                        });
+
+                $('pre code').each(function (i, block) {
+                    hljs.highlightBlock(block);
+                });
+
+                var box = $('#myModal').jBox('Modal', {
+                    title: 'title.detail.description.title',
+                    content: $('#content'),
+                    theme: 'ModalBorder',
+                    closeButton: 'title'
+                });
+
+                function show(text) {
+                    $('#content').html("").html(text);
+                    box.open();
+                }
+
+                $('#data tbody').on('click', 'tr', function () {
+                    var dataFromRow = table.row(this).data();
+                    var descriptionObject = dataFromRow.description;
+                    var resultDetail = executeClick(descriptionObject);
+                    show(resultDetail);
+                });
+            });
+        </script>
+    </head>
+    <body>
+        <div class="container">
+            <div class="panel panel-collapse">
+                <div class="panel-heading">title.server.server :NAME_SERVER</div>
+                <div class="panel-body">
+                    <table id="data" class="display" cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th>title.server.table.column.name</th>
+                                <th>title.server.table.column.tool</th>
+                                <th>title.server.table.column.status</th>
+                                <th>title.server.table.column.author</th>
+                                <th>title.server.table.column.date.create</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>title.server.table.column.name</th>
+                                <th>title.server.table.column.tool</th>
+                                <th>title.server.table.column.status</th>
+                                <th>title.server.table.column.author</th>
+                                <th>title.server.table.column.date.create</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+            <div id="content"></div>
+            <input type="button" id="myModal" value="test" style="display:none">
+        </div>
+        <script src="../bootstrap-3.3.6-dist/js/bootstrap.min.js"></script>
+    </body>
+</html>

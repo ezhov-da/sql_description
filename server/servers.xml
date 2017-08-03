@@ -1,0 +1,37 @@
+﻿<serversManager>
+  <mssql>
+    <server>
+      <nameServer>EZHOVMSSQL</nameServer>
+      <classDriver>com.microsoft.sqlserver.jdbc.SQLServerDriver</classDriver>
+      <connectionUrl>jdbc:sqlserver://EZHOV\MSSQL;database=test;user=sa;password=adminadmin;</connectionUrl>
+      <databases>
+        <db>
+          <nameDb>TEST</nameDb>
+          <nameSchema>dbo</nameSchema>
+        </db>
+      </databases>
+    </server>
+    <server>
+      <nameServer>TEST</nameServer>
+      <classDriver>com.microsoft.sqlserver.jdbc.SQLServerDriver</classDriver>
+      <connectionUrl>jdbc:sqlserver://EZHOV\MSSQL;database=test;user=sa;password=adminadmin;</connectionUrl>
+      <databases>
+        <db>
+          <nameDb>TEST</nameDb>
+          <nameSchema>dbo</nameSchema>
+        </db>
+      </databases>
+    </server>
+    <server>
+      <nameServer>TEST_1</nameServer>
+      <classDriver>com.microsoft.sqlserver.jdbc.SQLServerDriver</classDriver>
+      <connectionUrl>jdbc:sqlserver://EZHOV\MSSQL;database=test;user=sa;password=adminadmin;</connectionUrl>
+      <databases>
+        <db>
+          <nameDb>TEST</nameDb>
+          <nameSchema>dbo</nameSchema>
+        </db>
+      </databases>
+    </server>
+  </mssql>
+</serversManager>

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>title.generator.description.generator</title>
+        <script src="../js/jquery-1.12.3.min.js"></script>
+        <script src="../js/codemirror.js"></script>
+        <link rel="stylesheet" href="../bootstrap-3.3.6-dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="../bootstrap-3.3.6-dist/css/bootstrap.css">
+        <script src="../js/xml.js"></script>
+        <link rel="stylesheet" href="../css/codemirror.css">
+        <script src="../js/own/generator_description_to_xml.js"></script>
+        <script src="../js/own/convertor_description_from_xml.js"></script>
+        <script src="../title.common.local.js"></script>
+        <script>
+            //начинаем отлов действий
+            $(document).ready(function () {
+                function executeSelect(list) {
+                    var fragment = document.createDocumentFragment();
+                    list.forEach(function (cuisine, index) {
+                        var opt = document.createElement('option');
+                        opt.innerHTML = cuisine;
+                        opt.value = cuisine;
+                        fragment.appendChild(opt);
+                    });
+                    return fragment;
+                }
+
+                //заполняем выпадающие списки
+                $.ajax({
+                    url: "/templates/app_lists.json",
+                    dataType: "json",
+                    success: function (result) {
+                        var sel = document.getElementById('status');
+                        sel.appendChild(executeSelect(result.statusList));
+                        sel = document.getElementById('tool');
+                        sel.appendChild(executeSelect(result.toolList));
+                        sel = document.getElementById('author');
+                        sel.appendChild(executeSelect(result.whoList));
+                    }});
+
+                //при каждой перезагрузке страницы очищаем поля
+                clear();
+                //ловим клик по кнопке сгененрировать		
+                $('#generate').click(function () {
+                    //получаем значения полей
+                    var status = document.getElementById('status');
+                    var tool = document.getElementById('tool');
+                    var name = document.getElementById('name');
+                    var author = document.getElementById('author');
+                    var comment = document.getElementById('comment');
+                    var listParam = document.getElementById('listParam');
+                    var listFields = document.getElementById('listFields');
+                    var listLogs = document.getElementById('listLogs');
+                    var result = document.getElementById('result');
+                    //генерируем всю необходимую информацию
+                    var basicReplace = basicGenerate(status.value, name.value, author.value, tool.value, comment.value);
+                    var resultText = generateParams(listParam.value, basicReplace);
+                    resultText = generateFields(listFields.value, resultText);
+                    resultText = generateLogs(listLogs.value, resultText);
+                    editor.setValue(resultText);
+                });
+
+                //ловим клик по кнопке очистить
+                $('#clear').click(function () {
+                    clear();
+                });
+
+                //ловим клик по кнопке очистить
+                $('#fromXml').click(function () {
+                    var status = document.getElementById('status');
+                    var tool = document.getElementById('tool');
+                    var name = document.getElementById('name');
+                    var author = document.getElementById('author');
+                    var comment = document.getElementById('comment');
+                    var listParam = document.getElementById('listParam');
+                    var listFields = document.getElementById('listFields');
+                    var listLogs = document.getElementById('listLogs');
+                    var result = document.getElementById('result');
+                    var textForConverter = editor.getValue();
+                    convertorDescriptionFromXml(
+                            textForConverter,
+                            status,
+                            tool,
+                            author,
+                            name,
+                            listParam,
+                            listFields,
+                            comment,
+                            listLogs
+                            );
+                });
+            });
+        </script>
+    </head>
+    <body>
+        <div class="container">
+            <div class="panel panel-collapse">
+                <div class="panel-heading">title.generator.description.generator</div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-5">
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <label for="status">title.generator.status</label>
+                                </div>
+                                <div class="col-md-10">
+                                    <select name="status" id ="status" style="width : 200"></select>			  	
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <label for="tool">title.generator.tool</label>
+                                </div>
+                                <div class="col-md-10">
+                                    <select name="tool" id ="tool" style="width : 200"></select>		  	
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <label for="author">title.generator.author</label>
+                                </div>
+                                <div class="col-md-10">
+                                    <select name="author" id ="author" style="width : 200"></select>			  	
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <label for="name">title.generator.name</label>
+                                </div>
+                                <div class="col-md-10">
+                                    <input type="text" id="name" name="name">			  	
+                                </div>
+                            </div>	
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label for="listParam">title.generator.list.params</label><br>
+                                </div>
+                            </div>			  				  			
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <textarea id="listParam" rows="5" cols="60"></textarea>
+                                </div>
+                            </div>		
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label for="listFields">title.generator.list.fields</label><br>
+                                </div>
+                            </div>			  				  			
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <textarea id="listFields" rows="5" cols="60"></textarea>
+                                </div>
+                            </div>	
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label for="comment">title.generator.comment</label>
+                                </div>
+                            </div>			  				  			
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <textarea id="comment" rows="5" cols="60"></textarea>
+                                </div>
+                            </div>	
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label for="listLogs">title.generator.list.logs</label>
+                                </div>
+                            </div>			  				  			
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <textarea id="listLogs" rows="5" cols="60"></textarea>
+                                </div>
+                            </div>			  			
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <button type="button" id="generate">title.generator.button.generate</button> 
+                                    <button type="button" id="clear">title.generator.button.clear</button> 
+                                </div>
+                            </div>			  			
+                        </div>
+                        <div class="col-md-7">	
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label for="comment">title.generator.result.description.generation</label>
+                                </div>
+                            </div>	
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <textarea id="result"></textarea>
+                                </div>
+                            </div>	
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <button type="button" id="fromXml">title.generator.button.from.xml</button> 
+                                </div>
+                            </div>		  					  						 			 	
+                        </div>
+                    </div>
+                </div>
+            </div> 	
+        </div>	
+        <script src="../bootstrap-3.3.6-dist/js/bootstrap.min.js"></script>
+        <script src="../js/codeMirrorInit.js"></script>
+    </body>
+</html>

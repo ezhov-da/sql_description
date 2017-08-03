@@ -1,0 +1,19 @@
+.hidden_column{
+	display: none;
+}
+#content_prc{
+	display: none;
+}
+
+.label_block{
+	font-weight: bold;
+}
+.comment_block{
+	overflow: hidden;
+}
+.comment_block pre{
+	min-width: 300px;
+	max-height: 200px;
+	max-width: 800px;
+	white-space: pre-line;
+}
